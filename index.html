@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TaskFlow — a simple, modern productivity dashboard.">
+  <title>TaskFlow | Smart Task Manager</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="TaskFlow home">
+        <span class="brand-icon">✓</span>
+        <span>TaskFlow</span>
+      </a>
+
+      <p class="nav-label">WORKSPACE</p>
+      <nav class="navigation" aria-label="Task views">
+        <button class="nav-item active" data-view="all">▦ <span>Dashboard</span></button>
+        <button class="nav-item" data-view="today">◷ <span>Today</span></button>
+        <button class="nav-item" data-view="upcoming">▣ <span>Upcoming</span></button>
+        <button class="nav-item" data-view="completed">✓ <span>Completed</span></button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <p class="nav-label">YOUR SPACE</p>
+        <p class="sidebar-note">A little progress every day adds up.</p>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">YOUR PERSONAL WORKSPACE</p>
+          <h1>My Dashboard</h1>
+          <p class="subheading" id="current-date"></p>
+        </div>
+        <button class="primary-button" id="open-task-form">+ Add Task</button>
+      </header>
+
+      <section class="welcome-panel">
+        <div>
+          <p class="eyebrow">MAKE TODAY COUNT</p>
+          <h2>Small steps. Big progress.</h2>
+          <p>Organize your priorities and focus on what matters.</p>
+        </div>
+        <div class="welcome-symbol" aria-hidden="true">✳</div>
+      </section>
+
+      <section class="stats-grid" aria-label="Task summary">
+        <article class="stat-card">
+          <p>Total Tasks</p>
+          <strong id="total-count">0</strong>
+          <span>All your tasks</span>
+        </article>
+        <article class="stat-card">
+          <p>In Progress</p>
+          <strong id="active-count">0</strong>
+          <span>Still to do</span>
+        </article>
+        <article class="stat-card">
+          <p>Completed</p>
+          <strong id="completed-count">0</strong>
+          <span>Great progress</span>
+        </article>
+        <article class="stat-card">
+          <p>Overdue</p>
+          <strong id="overdue-count">0</strong>
+          <span>Past due date</span>
+        </article>
+      </section>
+
+      <section class="tasks-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">STAY ON TRACK</p>
+            <h2 id="list-heading">Your Tasks</h2>
+          </div>
+          <label class="search-box">
+            <span aria-hidden="true">⌕</span>
+            <input id="search-input" type="search" placeholder="Search tasks..." aria-label="Search tasks">
+          </label>
+        </div>
+
+        <div class="task-controls">
+          <div class="filter-tabs" aria-label="Filter by status">
+            <button class="filter-tab active" data-filter="all">All</button>
+            <button class="filter-tab" data-filter="active">Active</button>
+            <button class="filter-tab" data-filter="completed">Completed</button>
+          </div>
+
+          <select id="category-filter" aria-label="Filter by category">
+            <option value="all">All categories</option>
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Study">Study</option>
+          </select>
+          <select id="sort-select" aria-label="Sort tasks">
+            <option value="date">Due date</option>
+            <option value="priority">Priority</option>
+            <option value="newest">Newest first</option>
+          </select>
+        </div>
+
+        <div id="task-list" class="task-list" aria-live="polite"></div>
+      </section>
+
+      <footer class="footer">
+        <span>TaskFlow</span>
+        <span>Your tasks stay on this device.</span>
+      </footer>
+    </main>
+  </div>
+
+  <dialog id="task-dialog" class="task-dialog">
+    <form id="task-form">
+      <div class="dialog-heading">
+        <div>
+          <p class="eyebrow">PLAN YOUR NEXT STEP</p>
+          <h2 id="dialog-title">Create a task</h2>
+        </div>
+        <button type="button" class="icon-button" id="close-dialog" aria-label="Close form">✕</button>
+      </div>
+
+      <label for="task-title">Task title *</label>
+      <input id="task-title" name="title" maxlength="120" required placeholder="What needs to get done?">
+
+      <label for="task-description">Description</label>
+      <textarea id="task-description" name="description" rows="3" maxlength="500" placeholder="Add a few details (optional)"></textarea>
+
+      <div class="form-row">
+        <div>
+          <label for="task-category">Category</label>
+          <select id="task-category" name="category">
+            <option>Work</option>
+            <option>Personal</option>
+            <option>Study</option>
+          </select>
+        </div>
+        <div>
+          <label for="task-priority">Priority</label>
+          <select id="task-priority" name="priority">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="task-due-date">Due date</label>
+      <input id="task-due-date" name="dueDate" type="date">
+
+      <div class="dialog-actions">
+        <button type="button" class="secondary-button" id="cancel-dialog">Cancel</button>
+        <button type="submit" class="primary-button">Save Task</button>
+      </div>
+    </form>
+  </dialog>
+  
+<dialog id="delete-dialog" class="task-dialog delete-dialog">
+  <div class="delete-content">
+    <div class="delete-icon" aria-hidden="true">!</div>
+
+    <h2>Delete this task?</h2>
+    <p id="delete-message">
+      This task will be permanently removed from your list.
+    </p>
+
+    <div class="dialog-actions">
+      <button type="button" class="secondary-button" id="cancel-delete">
+        Cancel
+      </button>
+      <button type="button" class="delete-confirm-button" id="confirm-delete">
+        Delete Task
+      </button>
+    </div>
+  </div>
+</dialog>
+</body>
+</html>
